@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({Key? key}) : super(key: key);
@@ -9,11 +11,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color(0xFF8B9475),
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.menu, color: Colors.white),
+        icon: SvgPicture.asset(
+          'assets/icons/drawer.svg',
+          color: Colors.white,
+        ),
         onPressed: () {
           // Handle menu button press
         },
       ),
+      centerTitle: true,
       title: const Text(
         'TravelBuddy',
         style: TextStyle(

@@ -29,6 +29,7 @@ class TravelBuddyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'TravelBuddy',
           theme: ThemeData(
             primaryColor: const Color(0xFF8B9475),

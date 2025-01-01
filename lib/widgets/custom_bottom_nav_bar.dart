@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'circular_nav_item.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -12,7 +14,16 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, String>> items = [
+      {'icon': 'assets/icons/car.svg', 'label': 'Trip Plan'},
+      {'icon': 'assets/icons/guide-board.svg', 'label': 'Guides'},
+      {'icon': 'assets/icons/home.svg', 'label': 'Home'},
+      {'icon': 'assets/icons/map-draw.svg', 'label': 'Maps'},
+      {'icon': 'assets/icons/Heart.svg', 'label': 'Favorites'},
+    ];
+
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -24,34 +35,31 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
         ],
       ),
-      child: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: onTap,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF8B9475),
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Trip Plan',
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(
+          items.length,
+              (index) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularNavItem(
+                svgPath: items[index]['icon']!,
+                isSelected: currentIndex == index,
+                onTap: () => onTap(index),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                items[index]['label']!,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: currentIndex == index
+                      ? const Color(0xFF8B9475)
+                      : Colors.grey,
+                ),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Guides',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Maps',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-        ],
+        ),
       ),
     );
   }
