@@ -158,13 +158,6 @@ class _SearchScreenState extends State<SearchScreen> {
             final destination = _searchResults[index];
             return DestinationCard(
               destination: destination,
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/destination-details',
-                  arguments: destination,
-                );
-              },
             );
           },
         );
