@@ -5,10 +5,12 @@ import '../screens/search_screen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuPressed;
+  final bool isSearchScreen;
 
   const CustomAppBar({
     Key? key,
     this.onMenuPressed,
+    this.isSearchScreen = false,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.white,
         ),
         onPressed: onMenuPressed ?? () {
-          // Handle menu button press
           Scaffold.of(context).openDrawer();
         },
       ),
@@ -37,8 +38,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.search, color: Colors.white),
-          onPressed: () {
+          icon: Icon(
+            isSearchScreen ? Icons.close : Icons.search,
+            color: Colors.white,
+          ),
+          onPressed: isSearchScreen
+              ? () => Navigator.pop(context)
+              : () {
             Navigator.push(
               context,
               MaterialPageRoute(
