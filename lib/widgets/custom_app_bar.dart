@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
+import '../screens/search_screen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({Key? key}) : super(key: key);
+  final VoidCallback? onMenuPressed;
+  final bool isSearchScreen;
+
+  const CustomAppBar({
+    Key? key,
+    this.onMenuPressed,
+    this.isSearchScreen = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +23,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           'assets/icons/drawer.svg',
           color: Colors.white,
         ),
-        onPressed: () {
-          // Handle menu button press
+        onPressed: onMenuPressed ?? () {
+          Scaffold.of(context).openDrawer();
         },
       ),
       centerTitle: true,
@@ -30,9 +38,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.search, color: Colors.white),
-          onPressed: () {
-            // Handle search button press
+          icon: Icon(
+            isSearchScreen ? Icons.close : Icons.search,
+            color: Colors.white,
+          ),
+          onPressed: isSearchScreen
+              ? () => Navigator.pop(context)
+              : () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SearchScreen(),
+              ),
+            );
           },
         ),
       ],
