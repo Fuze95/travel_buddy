@@ -1,7 +1,9 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'services/theme_provider.dart';
+import 'services/destination_provider.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -12,7 +14,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        // Add other providers here
+        ChangeNotifierProvider(create: (_) => DestinationProvider()),
       ],
       child: const TravelBuddyApp(),
     ),
@@ -28,7 +30,14 @@ class TravelBuddyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           title: 'TravelBuddy',
-          theme: ThemeData.light(),
+          theme: ThemeData(
+            primaryColor: const Color(0xFF8B9475),
+            fontFamily: 'Rubik',
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+          ),
           darkTheme: ThemeData.dark(),
           themeMode: themeProvider.themeMode,
           home: const HomeScreen(),
