@@ -1,10 +1,9 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'services/theme_provider.dart';
 import 'services/destination_provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +40,7 @@ class TravelBuddyApp extends StatelessWidget {
           ),
           darkTheme: ThemeData.dark(),
           themeMode: themeProvider.themeMode,
-          home: const HomeScreen(),
+          home: const SplashScreen(),
         );
       },
     );
