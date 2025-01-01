@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'services/theme_provider.dart';
 import 'services/destination_provider.dart';
 import 'screens/splash_screen.dart';
+import 'services/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => DestinationProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const TravelBuddyApp(),
     ),
