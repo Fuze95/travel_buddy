@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'services/theme_provider.dart';
+import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final databaseHandler = DatabaseHandler();
-  await databaseHandler.initDatabase();
+  await Firebase.initializeApp();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => NoteProvider(databaseHandler)),
-        ChangeNotifierProvider(create: (_) => LabelProvider(databaseHandler)),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LoadingProvider()),
+        // Add other providers here
       ],
-      child: const MyApp(),
+      child: const TravelBuddyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class TravelBuddyApp extends StatelessWidget {
+  const TravelBuddyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          title: 'MySimpleNote',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: const SplashScreen(),
-          debugShowCheckedModeBanner: false,
+          title: 'TravelBuddy',
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: themeProvider.themeMode,
+          home: const HomeScreen(),
         );
       },
     );
