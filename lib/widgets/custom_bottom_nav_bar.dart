@@ -14,12 +14,12 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> items = [
-      {'icon': 'assets/icons/car.svg', 'label': 'Trip Plan'},
-      {'icon': 'assets/icons/guide-board.svg', 'label': 'Guides'},
-      {'icon': 'assets/icons/home.svg', 'label': 'Home'},
-      {'icon': 'assets/icons/map-draw.svg', 'label': 'Maps'},
-      {'icon': 'assets/icons/Heart.svg', 'label': 'Favorites'},
+    final List<String> icons = [
+      'assets/icons/car.svg',
+      'assets/icons/guide-board.svg',
+      'assets/icons/home.svg',
+      'assets/icons/map-draw.svg',
+      'assets/icons/Heart.svg',
     ];
 
     return Container(
@@ -38,26 +38,11 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(
-          items.length,
-              (index) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularNavItem(
-                svgPath: items[index]['icon']!,
-                isSelected: currentIndex == index,
-                onTap: () => onTap(index),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                items[index]['label']!,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: currentIndex == index
-                      ? const Color(0xFF8B9475)
-                      : Colors.grey,
-                ),
-              ),
-            ],
+          icons.length,
+              (index) => CircularNavItem(
+            svgPath: icons[index],
+            isSelected: currentIndex == index,
+            onTap: () => onTap(index),
           ),
         ),
       ),

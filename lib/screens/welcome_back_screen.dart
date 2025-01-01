@@ -1,4 +1,3 @@
-// lib/screens/welcome_back_screen.dart
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
@@ -46,7 +45,7 @@ class WelcomeBackScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Ready to explore the Sri Lanka?',
+                        'Ready to explore Sri Lanka?',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Rozha One',
@@ -78,7 +77,9 @@ class WelcomeBackScreen extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
+                                builder: (context) => HomeScreen(
+                                  userName: userName,
+                                ),
                               ),
                             );
                           },

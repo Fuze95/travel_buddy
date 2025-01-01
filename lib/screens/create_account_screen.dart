@@ -32,14 +32,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_name', _nameController.text.trim());
-      await prefs.setString('user_email', _emailController.text.trim());
+      final userName = _nameController.text.trim();
+      final userEmail = _emailController.text.trim();
+
+      await prefs.setString('user_name', userName);
+      await prefs.setString('user_email', userEmail);
 
       if (!mounted) return;
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            userName: userName,
+          ),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
