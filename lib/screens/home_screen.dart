@@ -1,16 +1,19 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/destination_provider.dart';
 import '../widgets/category_chip.dart';
-import '../widgets/destination_card.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../utils/category_data.dart';
 import '../models/destination.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final String userName;
+
+  const HomeScreen({
+    Key? key,
+    required this.userName,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _selectedCategory = 'All';
-  int _currentIndex = 2; // Home selected by default
+  int _currentIndex = 2;
 
   @override
   void initState() {
@@ -27,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<DestinationProvider>(context, listen: false).fetchDestinations();
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Ayubowan,',
                         style: TextStyle(
                           fontSize: 16,
@@ -58,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        'John Doe',
-                        style: TextStyle(
+                        widget.userName, // Using the passed userName here
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Rozha One',
