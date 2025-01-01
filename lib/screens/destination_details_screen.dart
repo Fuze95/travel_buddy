@@ -1,10 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/destination.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/cdn_image.dart';
 import '../services/destination_provider.dart';
+
+class DashedDivider extends StatelessWidget {
+  const DashedDivider({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Container(
+        height: 1,
+        color: Colors.grey[300],
+        child: Row(
+          children: List.generate(
+            50,
+                (index) => Expanded(
+              child: Container(
+                color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
+                height: 1,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class DestinationDetailsScreen extends StatelessWidget {
   final String destinationId;
@@ -27,243 +52,329 @@ class DestinationDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Hero Image Section
+                // Destination Name and Location Header
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
+                  child: Text(
+                    destination.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.location_on_outlined,
+                          color: Colors.grey[600],
+                          size: 20),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${destination.name}, Sri Lanka',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: IconButton(
+                          icon: Icon(
+                            destination.isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.grey[600],
+                            size: 24,
+                          ),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () {
+                            // Toggle favorite
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Main Image
                 Stack(
                   children: [
                     CdnImage(
                       imageUrl: destination.imageUrl,
                       width: double.infinity,
-                      height: 300,
+                      height: 200,
                       fit: BoxFit.cover,
                     ),
-                    Container(
-                      height: 300,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.7),
-                          ],
-                        ),
-                      ),
-                    ),
                     Positioned(
-                      bottom: 16,
-                      left: 16,
-                      child: Text(
-                        destination.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                      top: 8,
+                      right: 8,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          // Handle map view
+                        },
+                        icon: const Icon(Icons.open_in_new, size: 16),
+                        label: const Text('View on Map'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black87,
+                          textStyle: const TextStyle(fontSize: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
 
-                // Content
+                // Rating and Category
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      // Rating and Category
-                      Row(
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber),
-                              const SizedBox(width: 4),
-                              Text(
-                                destination.rating.toString(),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 16),
-                          ...destination.category.map((cat) => Chip(
-                            label: Text(cat),
-                            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                          )),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Description
+                      const Icon(Icons.star, size: 16, color: Colors.amber),
+                      const SizedBox(width: 4),
                       Text(
-                        'About',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        destination.rating.toString(),
+                        style: const TextStyle(fontSize: 14),
                       ),
-                      const SizedBox(height: 8),
-                      Text(destination.description),
-                      const SizedBox(height: 24),
-
-                      // Weather Information
-                      Text(
-                        'Weather Information',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      WeatherInfoCard(weatherInfo: destination.weatherInfo),
-                      const SizedBox(height: 24),
-
-                      // Activities
-                      Text(
-                        'Activities',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      ActivitiesList(activities: destination.activities),
-                      const SizedBox(height: 24),
-
-                      // Local Tips
-                      Text(
-                        'Local Tips',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      LocalTipsList(tips: destination.localTips),
-                      const SizedBox(height: 24),
-
-                      // Transportation Options
-                      Text(
-                        'Getting There',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      TransportationList(
-                        transportationOptions: destination.transportationOptions,
+                      const SizedBox(width: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.category_outlined, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              destination.category.first,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
+
+                // Description
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    destination.description,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+
+                const DashedDivider(),
+
+                // Weather Info
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+                  child: Row(
+                    children: [
+                      WeatherInfoTile(
+                        icon: Icons.wb_sunny_outlined,
+                        value: '${destination.weatherInfo['summerTemp']}',
+                      ),
+                      const SizedBox(width: 24),
+                      WeatherInfoTile(
+                        icon: Icons.water_drop_outlined,
+                        value: (destination.weatherInfo['rainySeasons'] as List)
+                            .take(2)
+                            .join(', '),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const DashedDivider(),
+
+                // Activities Section
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Text(
+                    'Activities',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
+                // Activities Chips
+                SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: destination.activities.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Chip(
+                          label: Text(
+                            destination.activities[index],
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          backgroundColor: Colors.grey[200],
+                          padding: EdgeInsets.zero,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const DashedDivider(),
+
+                // Tips Section
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    'Tips',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
+                // Tips List
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: destination.localTips.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.black87,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              destination.localTips[index],
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+
+                const DashedDivider(),
+
+                // Transportation Section
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    'Transportation',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
+                // Transportation List
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: destination.transportationOptions.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.black87,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              destination.transportationOptions[index],
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 16),
               ],
             ),
           );
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: -1, // No active index
-        noFill: true, // No filled state
-        onTap: (_) {}, // Empty callback
+        currentIndex: -1,
+        noFill: true,
+        onTap: (_) {},
       ),
     );
   }
 }
 
-// Helper Widgets
-class WeatherInfoCard extends StatelessWidget {
-  final Map<String, dynamic> weatherInfo;
+class WeatherInfoTile extends StatelessWidget {
+  final IconData icon;
+  final String value;
 
-  const WeatherInfoCard({Key? key, required this.weatherInfo}) : super(key: key);
+  const WeatherInfoTile({
+    Key? key,
+    required this.icon,
+    required this.value,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.wb_sunny_outlined),
-                const SizedBox(width: 8),
-                Text('Summer: ${weatherInfo['summerTemp']}'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.ac_unit_outlined),
-                const SizedBox(width: 8),
-                Text('Winter: ${weatherInfo['winterTemp']}'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.water_drop_outlined),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Rainy Seasons: ${(weatherInfo['rainySeasons'] as List).join(', ')}',
-                  ),
-                ),
-              ],
-            ),
-          ],
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Colors.grey[600]),
+        const SizedBox(width: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class ActivitiesList extends StatelessWidget {
-  final List<String> activities;
-
-  const ActivitiesList({Key? key, required this.activities}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: activities.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const Icon(Icons.directions_run),
-          title: Text(activities[index]),
-          contentPadding: EdgeInsets.zero,
-        );
-      },
-    );
-  }
-}
-
-class LocalTipsList extends StatelessWidget {
-  final List<String> tips;
-
-  const LocalTipsList({Key? key, required this.tips}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: tips.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const Icon(Icons.lightbulb_outline),
-          title: Text(tips[index]),
-          contentPadding: EdgeInsets.zero,
-        );
-      },
-    );
-  }
-}
-
-class TransportationList extends StatelessWidget {
-  final List<String> transportationOptions;
-
-  const TransportationList({Key? key, required this.transportationOptions}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: transportationOptions.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const Icon(Icons.directions_car),
-          title: Text(transportationOptions[index]),
-          contentPadding: EdgeInsets.zero,
-        );
-      },
+      ],
     );
   }
 }
