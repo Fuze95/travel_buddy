@@ -44,33 +44,57 @@ class FavoritesScreen extends StatelessWidget {
           }
 
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.zero,
             children: [
-              const Text(
-                'Favorite\nDestinations',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  height: 1.2,
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Favorite',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Destinations',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.85,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.85,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: favorites.length,
+                  itemBuilder: (context, index) {
+                    return DestinationCard(
+                      destination: favorites[index],
+                      isPopular: true,
+                    );
+                  },
                 ),
-                itemCount: favorites.length,
-                itemBuilder: (context, index) {
-                  return DestinationCard(
-                    destination: favorites[index],
-                    isPopular: true,
-                  );
-                },
               ),
             ],
           );
@@ -81,14 +105,13 @@ class FavoritesScreen extends StatelessWidget {
         onTap: (index) {
           if (index != 4) {
             final userName = context.read<UserProvider>().userName;
-            if (index == 2) { // Home
+            if (index == 2) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => HomeScreen(userName: userName),
                 ),
               );
             }
-            // Handle other navigation cases
           }
         },
         noFill: false,
