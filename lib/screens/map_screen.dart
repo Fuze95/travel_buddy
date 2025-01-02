@@ -52,20 +52,22 @@ class _MapScreenState extends State<MapScreen> {
     _markers = destinations.map((destination) {
       return Marker(
         point: LatLng(destination.latitude, destination.longitude),
-        width: 80,
-        height: 80,
+        width: 100,
+        height: 70,
         builder: (context) => GestureDetector(
           onTap: () => _showDestinationDetails(destination),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
+                constraints: const BoxConstraints(maxWidth: 90),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
+                  horizontal: 6,
+                  vertical: 3,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
@@ -77,15 +79,18 @@ class _MapScreenState extends State<MapScreen> {
                 child: Text(
                   destination.name,
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(height: 2),
               const Icon(
                 Icons.location_on,
                 color: Color(0xFF8B9475),
-                size: 24,
+                size: 20,
               ),
             ],
           ),
@@ -174,14 +179,9 @@ class _MapScreenState extends State<MapScreen> {
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black12,
-                  blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
               ],
