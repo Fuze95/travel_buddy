@@ -129,8 +129,8 @@ class _AddTripScreenState extends State<AddTripScreen> {
             const Text(
               'Trip',
               style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const Text(
@@ -138,6 +138,7 @@ class _AddTripScreenState extends State<AddTripScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
+                height: 1.2,
               ),
             ),
             const SizedBox(height: 24),
