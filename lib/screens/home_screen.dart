@@ -4,8 +4,9 @@ import '../services/destination_provider.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/destination_card.dart';
 import '../utils/category_data.dart';
-import '../models/destination.dart';
+import '../screens/favorites_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userName;
@@ -30,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<DestinationProvider>(context, listen: false).fetchDestinations();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        widget.userName, // Using the passed userName here
+                        widget.userName,
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -121,17 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: filteredDestinations.length,
                         itemBuilder: (context, index) {
                           final destination = filteredDestinations[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 16),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.7,
-                              child: DestinationCard(
-                                destination: destination,
-                                onTap: () {
-                                  // Navigate to destination detail
-                                  print('Selected destination: ${destination.name}');
-                                },
-                              ),
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            child: DestinationCard(
+                              destination: destination,
+                              isPopular: false,
                             ),
                           );
                         },
@@ -171,9 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           final destination = destinationProvider.popularDestinations[index];
                           return DestinationCard(
                             destination: destination,
-                            onTap: () {
-                              // Navigate to destination detail
-                            },
+                            isPopular: true,
                           );
                         },
                       ),
@@ -187,104 +179,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-      ),
-    );
-  }
-}
-
-// Update DestinationCard widget
-class DestinationCard extends StatelessWidget {
-  final Destination destination;
-  final VoidCallback onTap;
-
-  const DestinationCard({
-    Key? key,
-    required this.destination,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                destination.imageUrl,
-                fit: BoxFit.cover,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+          if (index == 4) { // Favorites
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const FavoritesScreen(),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.7),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 16,
-                left: 16,
-                right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      destination.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Rozha One',
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            '${destination.name}, Sri Lanka',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontFamily: 'Rubik',
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+            );
+          }
+        },
       ),
     );
   }

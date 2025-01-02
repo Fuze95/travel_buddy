@@ -103,7 +103,8 @@ class DestinationDetailsScreen extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           onPressed: () {
-                            // Toggle favorite
+                            final destinationProvider = context.read<DestinationProvider>();
+                            destinationProvider.toggleFavorite(destination.id);
                           },
                         ),
                       ),

@@ -33,6 +33,42 @@ class Destination {
     this.isFavorite = false,
   });
 
+  Destination copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? imageUrl,
+    double? latitude,
+    double? longitude,
+    double? rating,
+    List<String>? activities,
+    List<String>? category,
+    List<String>? highlights,
+    String? bestTimeToVisit,
+    List<String>? localTips,
+    List<String>? transportationOptions,
+    Map<String, dynamic>? weatherInfo,
+    bool? isFavorite,
+  }) {
+    return Destination(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      rating: rating ?? this.rating,
+      activities: activities ?? this.activities,
+      category: category ?? this.category,
+      highlights: highlights ?? this.highlights,
+      bestTimeToVisit: bestTimeToVisit ?? this.bestTimeToVisit,
+      localTips: localTips ?? this.localTips,
+      transportationOptions: transportationOptions ?? this.transportationOptions,
+      weatherInfo: weatherInfo ?? this.weatherInfo,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,

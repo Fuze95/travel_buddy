@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/destination.dart';
 import '../screens/destination_details_screen.dart';
+import '../services/destination_provider.dart';
 import 'cdn_image.dart';
 
 class DestinationCard extends StatelessWidget {
@@ -27,7 +29,7 @@ class DestinationCard extends StatelessWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(right: 16),
+        margin: EdgeInsets.only(right: isPopular ? 0 : 16),
         width: isPopular ? 200 : double.infinity,
         height: isPopular ? 250 : 200,
         decoration: BoxDecoration(
@@ -43,7 +45,7 @@ class DestinationCard extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Stack(
-            fit: StackFit.expand,  // Ensures stack fills container
+            fit: StackFit.expand,
             children: [
               // Background Image
               CdnImage(
@@ -71,7 +73,7 @@ class DestinationCard extends StatelessWidget {
                 left: 12,
                 right: 12,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,  // Takes minimum space needed
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Rating and Category Row
@@ -91,7 +93,7 @@ class DestinationCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
-                              mainAxisSize: MainAxisSize.min,  // Takes minimum space
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(
                                   Icons.star,
@@ -112,7 +114,7 @@ class DestinationCard extends StatelessWidget {
                           ),
                           // Category Chip
                           if (destination.category.isNotEmpty)
-                            Flexible(  // Allows the container to shrink
+                            Flexible(
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
@@ -129,7 +131,7 @@ class DestinationCard extends StatelessWidget {
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  overflow: TextOverflow.ellipsis,  // Handles text overflow
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
@@ -218,8 +220,8 @@ class DestinationCard extends StatelessWidget {
                       size: 20,
                     ),
                     onPressed: () {
-                      // Handle favorite toggle
-                      // You should implement this using your DestinationProvider
+                      final destinationProvider = context.read<DestinationProvider>();
+                      destinationProvider.toggleFavorite(destination.id);
                     },
                     constraints: const BoxConstraints(
                       minWidth: 40,

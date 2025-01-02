@@ -1,18 +1,65 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/destination.dart';
 
 class DestinationProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final SharedPreferences _prefs;
   List<Destination> _destinations = [];
   List<Destination> _popularDestinations = [];
+  Set<String> _favoriteIds = {};
   bool _isLoading = false;
   String _error = '';
 
+  DestinationProvider(this._prefs) {
+    _loadFavoriteIds();
+  }
+
   List<Destination> get destinations => _destinations;
   List<Destination> get popularDestinations => _popularDestinations;
+  List<Destination> get favorites => _destinations.where((d) => isFavorite(d.id)).toList();
   bool get isLoading => _isLoading;
   String get error => _error;
+
+  void _loadFavoriteIds() {
+    final favoritesJson = _prefs.getStringList('favorites') ?? [];
+    _favoriteIds = favoritesJson.toSet();
+  }
+
+  bool isFavorite(String id) => _favoriteIds.contains(id);
+
+  Future<void> toggleFavorite(String destinationId) async {
+    if (_favoriteIds.contains(destinationId)) {
+      _favoriteIds.remove(destinationId);
+    } else {
+      _favoriteIds.add(destinationId);
+    }
+
+    await _prefs.setStringList('favorites', _favoriteIds.toList());
+
+    // Update the destination objects with new favorite status
+    _destinations = _destinations.map((destination) {
+      if (destination.id == destinationId) {
+        return destination.copyWith(
+            isFavorite: _favoriteIds.contains(destinationId)
+        );
+      }
+      return destination;
+    }).toList();
+
+    // Also update popular destinations
+    _popularDestinations = _popularDestinations.map((destination) {
+      if (destination.id == destinationId) {
+        return destination.copyWith(
+            isFavorite: _favoriteIds.contains(destinationId)
+        );
+      }
+      return destination;
+    }).toList();
+
+    notifyListeners();
+  }
 
   Future<void> fetchDestinations() async {
     _isLoading = true;
@@ -21,7 +68,12 @@ class DestinationProvider with ChangeNotifier {
     try {
       final QuerySnapshot snapshot = await _firestore.collection('destinations').get();
       _destinations = snapshot.docs
-          .map((doc) => Destination.fromJson(doc.data() as Map<String, dynamic>))
+          .map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return Destination.fromJson(data).copyWith(
+            isFavorite: _favoriteIds.contains(data['id'])
+        );
+      })
           .toList();
 
       // Sort by rating to get popular destinations
@@ -103,7 +155,9 @@ class DestinationProvider with ChangeNotifier {
             categories.any((category) => category.contains(searchLower));
       }).map((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        return Destination.fromJson(data);
+        return Destination.fromJson(data).copyWith(
+            isFavorite: _favoriteIds.contains(data['id'])
+        );
       }).toList();
 
       _isLoading = false;
