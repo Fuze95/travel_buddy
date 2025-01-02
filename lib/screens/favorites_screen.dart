@@ -102,19 +102,8 @@ class FavoritesScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 4,
-        onTap: (index) {
-          if (index != 4) {
-            final userName = context.read<UserProvider>().userName;
-            if (index == 2) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(userName: userName),
-                ),
-              );
-            }
-          }
-        },
         noFill: false,
+        onTap: (index) {},
       ),
     );
   }

@@ -249,19 +249,8 @@ class _MapScreenState extends State<MapScreen> {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 3,
-        onTap: (index) {
-          if (index != 3) {
-            final userName = context.read<UserProvider>().userName;
-            if (index == 2) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(userName: userName),
-                ),
-              );
-            }
-          }
-        },
         noFill: false,
+        onTap: (index) {},
       ),
     );
   }
