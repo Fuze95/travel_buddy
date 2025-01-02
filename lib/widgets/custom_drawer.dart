@@ -34,33 +34,28 @@ class CustomDrawer extends StatelessWidget {
       child: Drawer(
         child: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.only(top: 50, right: 20),
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => _closeDrawer(context),
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(top: 90),
+                child: Text(
+                  'TravelBuddy',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontFamily: 'Rozha One',
+                    color: Color(0xFF8B9475),
+                  ),
+                ),
               ),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  const DrawerHeader(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.transparent),
-                      ),
-                    ),
-                    child: Text(
-                      'TravelBuddy',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontFamily: 'Rozha One',
-                        color: Color(0xFF8B9475),
-                      ),
-                    ),
-                  ),
                   _buildDrawerItem(
                     context,
                     'Home',
@@ -131,14 +126,40 @@ class CustomDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                '© 2025 V. G. S. M. Wijerathna (2421736)',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '© 2025 developed by',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    'V. G. S. M. Wijerathna (2421736)',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    'H.H.B.S. Gunawardena (2431659)',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    'P.T.D Jayatissa (2430778)',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
