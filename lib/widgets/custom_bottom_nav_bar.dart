@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'circular_nav_item.dart';
+import '../screens/trip_planning_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/favorites_screen.dart';
 import '../screens/map_screen.dart';
@@ -24,7 +25,11 @@ class CustomBottomNavBar extends StatelessWidget {
     // Handle navigation based on index
     switch (index) {
       case 0: // Trip Plan
-      // TODO: Navigate to TripPlanScreen when implemented
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const TripPlanningScreen(),
+          ),
+        );
         break;
       case 1: // Guides
       // TODO: Navigate to GuidesScreen when implemented

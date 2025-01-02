@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/services.dart';
 import '../screens/search_screen.dart';
+import '../screens/add_trip_screen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuPressed;
   final bool isSearchScreen;
+  final bool isAddTripScreen;
 
   const CustomAppBar({
     Key? key,
     this.onMenuPressed,
     this.isSearchScreen = false,
+    this.isAddTripScreen = false,
   }) : super(key: key);
 
   @override
@@ -39,10 +41,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: Icon(
-            isSearchScreen ? Icons.close : Icons.search,
+            isSearchScreen || isAddTripScreen ? Icons.close : Icons.search,
             color: Colors.white,
           ),
-          onPressed: isSearchScreen
+          onPressed: isSearchScreen || isAddTripScreen
               ? () => Navigator.pop(context)
               : () {
             Navigator.push(
