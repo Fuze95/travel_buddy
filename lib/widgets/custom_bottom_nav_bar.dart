@@ -5,6 +5,7 @@ import '../screens/trip_planning_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/favorites_screen.dart';
 import '../screens/map_screen.dart';
+import '../screens/travel_guides_screen.dart';
 import '../services/user_provider.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -32,7 +33,11 @@ class CustomBottomNavBar extends StatelessWidget {
         );
         break;
       case 1: // Guides
-      // TODO: Navigate to GuidesScreen when implemented
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const TravelGuideScreen(),
+          ),
+        );
         break;
       case 2: // Home
         final userName = context.read<UserProvider>().userName;
