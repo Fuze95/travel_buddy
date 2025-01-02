@@ -19,10 +19,10 @@ class FavoritesScreen extends StatelessWidget {
               .toList();
 
           if (favorites.isEmpty) {
-            return Center(
+            return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(
                     Icons.favorite_border,
                     size: 64,
@@ -53,9 +53,9 @@ class FavoritesScreen extends StatelessWidget {
                     bottomRight: Radius.circular(16),
                   ),
                 ),
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Favorite',
                       style: TextStyle(

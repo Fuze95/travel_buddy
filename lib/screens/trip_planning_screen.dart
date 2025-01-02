@@ -3,7 +3,9 @@ import 'dart:convert';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/trip_card.dart';
-import '../screens/add_trip_screen.dart';
+import '../screens/add_plan_screen.dart';
+import '../screens/view_plan_screen.dart';
+import '../screens/edit_plan_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -67,16 +69,16 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('Delete'),
-            ),
-            ],
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  child: const Text('Delete'),
+                ),
+              ],
             )
           ],
         );
@@ -111,7 +113,6 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
     }
   }
 
-  // Get a random image URL from the destinations list
   Future<String> _getDestinationImageFromFirestore(List<Map<String, dynamic>> destinations) async {
     if (destinations.isEmpty) {
       return 'assets/images/placeholder_destination.jpg';
@@ -122,7 +123,6 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
       if (firstDestination.containsKey('id')) {
         final String destinationId = firstDestination['id'];
 
-        // Fetch from Firestore
         final docSnapshot = await FirebaseFirestore.instance
             .collection('destinations')
             .doc(destinationId)
@@ -233,17 +233,30 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
                       description: trip['description'] ?? '',
                       imageUrl: imageUrl,
                       onView: () {
-                        // Implement view functionality
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewPlanScreen(planId: trip['id']),
+                          ),
+                        );
                       },
                       onEdit: () {
-                        // Implement edit functionality
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditTripScreen(
+                              tripId: trip['id'],
+                              onUpdateComplete: _loadTrips,
+                            ),
+                          ),
+                        );
                       },
                       onDelete: () => _deleteTrip(trip['id']),
                     );
                   },
                 );
               },
-            )
+            ),
           ),
         ],
       ),
