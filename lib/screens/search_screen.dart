@@ -5,6 +5,7 @@ import '../models/destination.dart';
 import '../widgets/destination_card.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Destination> _searchResults = [];
   bool _isSearching = false;
   int _currentIndex = 0;
@@ -58,6 +60,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   PreferredSizeWidget _buildSearchAppBar() {
     return CustomAppBar(
+      scaffoldKey: _scaffoldKey,
       isSearchScreen: true,
     );
   }
@@ -168,8 +171,10 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: _buildSearchAppBar(),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
         children: [
           _buildSearchBar(),

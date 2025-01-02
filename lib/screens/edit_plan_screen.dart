@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-class AddTripScreen extends StatefulWidget {
-  const AddTripScreen({Key? key}) : super(key: key);
+class EditTripScreen extends StatefulWidget {
+  final String tripId;
+  final VoidCallback onUpdateComplete;
+
+  const EditTripScreen({
+    Key? key,
+    required this.tripId,
+    required this.onUpdateComplete,
+  }) : super(key: key);
 
   @override
-  State<AddTripScreen> createState() => _AddTripScreenState();
+  State<EditTripScreen> createState() => _EditTripScreenState();
 }
 
-class _AddTripScreenState extends State<AddTripScreen> {
+class _EditTripScreenState extends State<EditTripScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _planController = TextEditingController();
   final _descriptionController = TextEditingController();
   List<Map<String, String>> selectedDestinations = [];
@@ -20,15 +29,17 @@ class _AddTripScreenState extends State<AddTripScreen> {
   bool isLoading = true;
   List<Map<String, String>> destinations = [];
   int _currentIndex = 0;
+  Map<String, dynamic>? existingTripData;
 
   @override
   void initState() {
     super.initState();
-    _fetchDestinations();
+    _loadTripDataAndDestinations();
   }
 
-  Future<void> _fetchDestinations() async {
+  Future<void> _loadTripDataAndDestinations() async {
     try {
+      // Load destinations from Firestore
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('destinations')
           .get();
@@ -40,10 +51,38 @@ class _AddTripScreenState extends State<AddTripScreen> {
             'name': (doc.data() as Map<String, dynamic>)['name'] as String,
           };
         }).toList();
+      });
+
+      // Load existing trip data
+      final prefs = await SharedPreferences.getInstance();
+      final tripsList = prefs.getStringList('trips') ?? [];
+
+      final trip = tripsList
+          .map((tripStr) => json.decode(tripStr) as Map<String, dynamic>)
+          .firstWhere(
+            (trip) => trip['id'] == widget.tripId,
+        orElse: () => {},
+      );
+
+      if (trip.isNotEmpty) {
+        setState(() {
+          existingTripData = trip;
+          _planController.text = trip['plan'] ?? '';
+          _descriptionController.text = trip['description'] ?? '';
+          selectedDestinations = (trip['destinations'] as List)
+              .map((dest) => {
+            'id': dest['id'].toString(),
+            'name': dest['name'].toString(),
+          })
+              .toList();
+        });
+      }
+
+      setState(() {
         isLoading = false;
       });
     } catch (e) {
-      print('Error fetching destinations: $e');
+      print('Error loading data: $e');
       setState(() {
         isLoading = false;
       });
@@ -62,6 +101,7 @@ class _AddTripScreenState extends State<AddTripScreen> {
         !selectedDestinations.any((dest) => dest['id'] == destinationId)) {
       setState(() {
         selectedDestinations.add(selectedDestination);
+        selectedDestinationId = null; // Reset dropdown after selection
       });
     }
   }
@@ -72,7 +112,7 @@ class _AddTripScreenState extends State<AddTripScreen> {
     });
   }
 
-  Future<void> _saveTrip() async {
+  Future<void> _updateTrip() async {
     if (selectedDestinations.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select at least one destination')),
@@ -80,57 +120,67 @@ class _AddTripScreenState extends State<AddTripScreen> {
       return;
     }
 
-    final tripData = {
-      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+    final updatedTripData = {
+      'id': widget.tripId,
       'plan': _planController.text,
       'description': _descriptionController.text,
       'destinations': selectedDestinations.map((dest) => {
         'id': dest['id'],
         'name': dest['name'],
       }).toList(),
-      'createdAt': DateTime.now().toIso8601String(),
+      'createdAt': existingTripData?['createdAt'] ?? DateTime.now().toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
     };
 
     try {
       final prefs = await SharedPreferences.getInstance();
       List<String> trips = prefs.getStringList('trips') ?? [];
-      trips.add(jsonEncode(tripData));
-      await prefs.setStringList('trips', trips);
+
+      // Find and update the existing trip
+      final updatedTrips = trips.map((tripStr) {
+        final trip = json.decode(tripStr);
+        if (trip['id'] == widget.tripId) {
+          return json.encode(updatedTripData);
+        }
+        return tripStr;
+      }).toList();
+
+      await prefs.setStringList('trips', updatedTrips);
 
       if (mounted) {
+        widget.onUpdateComplete(); // Call the callback to refresh parent screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Trip updated successfully')),
+        );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to save trip')),
+          const SnackBar(content: Text('Failed to update trip')),
         );
       }
     }
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return CustomAppBar(
-      isAddTripScreen: true,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey , isEditTripScreen: true,),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Trip',
               style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const Text(
@@ -138,6 +188,7 @@ class _AddTripScreenState extends State<AddTripScreen> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
+                height: 1.2,
               ),
             ),
             const SizedBox(height: 24),
@@ -226,7 +277,7 @@ class _AddTripScreenState extends State<AddTripScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _saveTrip,
+                onPressed: _updateTrip,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF8B9475),
                   padding: const EdgeInsets.symmetric(vertical: 16),

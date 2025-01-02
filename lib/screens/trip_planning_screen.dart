@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/trip_card.dart';
-import '../screens/add_trip_screen.dart';
+import '../screens/add_plan_screen.dart';
+import '../screens/view_plan_screen.dart';
+import '../screens/edit_plan_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -15,6 +18,7 @@ class TripPlanningScreen extends StatefulWidget {
 }
 
 class _TripPlanningScreenState extends State<TripPlanningScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> trips = [];
   bool isLoading = true;
 
@@ -48,33 +52,69 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   }
 
   Future<void> _deleteTrip(String tripId) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final tripsList = prefs.getStringList('trips') ?? [];
-
-      final updatedTrips = tripsList.where((tripStr) {
-        final trip = json.decode(tripStr) as Map<String, dynamic>;
-        return trip['id'] != tripId;
-      }).toList();
-
-      await prefs.setStringList('trips', updatedTrips);
-      await _loadTrips(); // Reload the trips
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Trip deleted successfully')),
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+          titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+          title: const Text(
+            'Delete Trip',
+            textAlign: TextAlign.center,
+          ),
+          content: const Text(
+            'Are you sure you want to delete this trip?\nThis action cannot be undone.',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  child: const Text('Delete'),
+                ),
+              ],
+            )
+          ],
         );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to delete trip')),
-        );
+      },
+    );
+
+    if (confirm == true) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final tripsList = prefs.getStringList('trips') ?? [];
+
+        final updatedTrips = tripsList.where((tripStr) {
+          final trip = json.decode(tripStr) as Map<String, dynamic>;
+          return trip['id'] != tripId;
+        }).toList();
+
+        await prefs.setStringList('trips', updatedTrips);
+        await _loadTrips();
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Trip deleted successfully')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete trip')),
+          );
+        }
       }
     }
   }
 
-  // Get a random image URL from the destinations list
   Future<String> _getDestinationImageFromFirestore(List<Map<String, dynamic>> destinations) async {
     if (destinations.isEmpty) {
       return 'assets/images/placeholder_destination.jpg';
@@ -85,7 +125,6 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
       if (firstDestination.containsKey('id')) {
         final String destinationId = firstDestination['id'];
 
-        // Fetch from Firestore
         final docSnapshot = await FirebaseFirestore.instance
             .collection('destinations')
             .doc(destinationId)
@@ -108,12 +147,24 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          // Fixed Header Container
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -145,7 +196,7 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
                         builder: (context) => const AddTripScreen(),
                       ),
                     );
-                    _loadTrips(); // Reload trips after returning from AddTripScreen
+                    _loadTrips();
                   },
                   icon: const Icon(Icons.add),
                   label: const Text('Add'),
@@ -160,6 +211,7 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
               ],
             ),
           ),
+          // Content Area
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -196,17 +248,30 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
                       description: trip['description'] ?? '',
                       imageUrl: imageUrl,
                       onView: () {
-                        // Implement view functionality
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewPlanScreen(planId: trip['id']),
+                          ),
+                        );
                       },
                       onEdit: () {
-                        // Implement edit functionality
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditTripScreen(
+                              tripId: trip['id'],
+                              onUpdateComplete: _loadTrips,
+                            ),
+                          ),
+                        );
                       },
                       onDelete: () => _deleteTrip(trip['id']),
                     );
                   },
                 );
               },
-            )
+            ),
           ),
         ],
       ),

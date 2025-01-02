@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/cdn_image.dart';
 import '../services/destination_provider.dart';
@@ -33,9 +34,10 @@ class DashedDivider extends StatelessWidget {
 }
 
 class DestinationDetailsScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String destinationId;
 
-  const DestinationDetailsScreen({
+   DestinationDetailsScreen({
     Key? key,
     required this.destinationId,
   }) : super(key: key);
@@ -43,7 +45,9 @@ class DestinationDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Consumer<DestinationProvider>(
         builder: (context, destinationProvider, child) {
           final destination = destinationProvider.destinations
