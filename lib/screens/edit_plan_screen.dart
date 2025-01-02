@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -20,6 +21,7 @@ class EditTripScreen extends StatefulWidget {
 }
 
 class _EditTripScreenState extends State<EditTripScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _planController = TextEditingController();
   final _descriptionController = TextEditingController();
   List<Map<String, String>> selectedDestinations = [];
@@ -164,9 +166,9 @@ class _EditTripScreenState extends State<EditTripScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        isEditTripScreen: true,
-      ),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey , isEditTripScreen: true,),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

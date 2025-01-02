@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/destination_card.dart';
 import '../services/destination_provider.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
         children: [
           // Fixed Header Container

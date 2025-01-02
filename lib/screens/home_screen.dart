@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/destination_provider.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/destination_card.dart';
 import '../utils/category_data.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String _selectedCategory = 'All';
   int _currentIndex = 2;
 
@@ -35,8 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
-      appBar: const CustomAppBar(),
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Consumer<DestinationProvider>(
         builder: (context, destinationProvider, child) {
           if (destinationProvider.isLoading) {
@@ -73,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
+                // Rest of your existing code remains the same...
                 // Categories
                 Container(
                   height: 50,

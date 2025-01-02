@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -13,6 +14,7 @@ class AddTripScreen extends StatefulWidget {
 }
 
 class _AddTripScreenState extends State<AddTripScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _planController = TextEditingController();
   final _descriptionController = TextEditingController();
   List<Map<String, String>> selectedDestinations = [];
@@ -118,7 +120,9 @@ class _AddTripScreenState extends State<AddTripScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

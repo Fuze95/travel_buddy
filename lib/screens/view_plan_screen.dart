@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../screens/destination_details_screen.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 class ViewPlanScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class ViewPlanScreen extends StatefulWidget {
 }
 
 class _ViewPlanScreenState extends State<ViewPlanScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Map<String, dynamic>? tripData;
   bool isLoading = true;
   int _currentIndex = 0;
@@ -69,9 +71,12 @@ class _ViewPlanScreenState extends State<ViewPlanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      key: _scaffoldKey,
+      appBar: CustomAppBar(
+        scaffoldKey: _scaffoldKey,
         isViewPlanScreen: true,
       ),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : tripData == null
@@ -89,12 +94,12 @@ class _ViewPlanScreenState extends State<ViewPlanScreen> {
               ),
             ),
             const Text(
-              'Planning',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                height: 1.2,
-              )
+                'Planning',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                )
             ),
             const SizedBox(height: 24),
             const Text(

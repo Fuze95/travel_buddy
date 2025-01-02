@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/faq_list_widget.dart';
 
-class TravelGuideScreen extends StatelessWidget {
+class TravelGuideScreen extends StatefulWidget {
   const TravelGuideScreen({Key? key}) : super(key: key);
+
+  @override
+  State<TravelGuideScreen> createState() => _TravelGuideScreenState();
+}
+
+class _TravelGuideScreenState extends State<TravelGuideScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<FAQItem> get _faqItems => [
     FAQItem(
@@ -53,7 +61,9 @@ class TravelGuideScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
         children: [
           // Fixed Header Container

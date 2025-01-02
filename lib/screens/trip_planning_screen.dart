@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/trip_card.dart';
 import '../screens/add_plan_screen.dart';
@@ -17,6 +18,7 @@ class TripPlanningScreen extends StatefulWidget {
 }
 
 class _TripPlanningScreenState extends State<TripPlanningScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> trips = [];
   bool isLoading = true;
 
@@ -145,7 +147,9 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
         children: [
           // Fixed Header Container

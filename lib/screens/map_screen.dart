@@ -6,9 +6,8 @@ import '../services/destination_provider.dart';
 import '../models/destination.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/custom_app_bar.dart';
-import '../screens/home_screen.dart';
+import '../widgets/custom_drawer.dart';
 import '../screens/destination_details_screen.dart';
-import '../services/user_provider.dart';
 import 'package:flutter_map/plugin_api.dart';
 
 class MapScreen extends StatefulWidget {
@@ -20,6 +19,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final MapController _mapController = MapController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Marker> _markers = [];
   List<Destination> destinations = [];
   bool _isLoading = true;
@@ -170,7 +170,9 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      key: _scaffoldKey,
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+      drawer: CustomDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
         children: [
           // Title Container
@@ -186,9 +188,9 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   'Explore',
                   style: TextStyle(
