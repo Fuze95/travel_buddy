@@ -48,28 +48,65 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   }
 
   Future<void> _deleteTrip(String tripId) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final tripsList = prefs.getStringList('trips') ?? [];
-
-      final updatedTrips = tripsList.where((tripStr) {
-        final trip = json.decode(tripStr) as Map<String, dynamic>;
-        return trip['id'] != tripId;
-      }).toList();
-
-      await prefs.setStringList('trips', updatedTrips);
-      await _loadTrips(); // Reload the trips
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Trip deleted successfully')),
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+          titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+          title: const Text(
+            'Delete Trip',
+            textAlign: TextAlign.center,
+          ),
+          content: const Text(
+            'Are you sure you want to delete this trip?\nThis action cannot be undone.',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+            ],
+            )
+          ],
         );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to delete trip')),
-        );
+      },
+    );
+
+    if (confirm == true) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final tripsList = prefs.getStringList('trips') ?? [];
+
+        final updatedTrips = tripsList.where((tripStr) {
+          final trip = json.decode(tripStr) as Map<String, dynamic>;
+          return trip['id'] != tripId;
+        }).toList();
+
+        await prefs.setStringList('trips', updatedTrips);
+        await _loadTrips(); // Reload the trips
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Trip deleted successfully')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete trip')),
+          );
+        }
       }
     }
   }
