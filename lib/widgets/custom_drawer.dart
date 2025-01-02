@@ -6,6 +6,7 @@ import '../screens/trip_planning_screen.dart';
 import '../screens/travel_guides_screen.dart';
 import '../screens/favorites_screen.dart';
 import '../screens/map_screen.dart';
+import '../screens/settings_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -122,7 +123,9 @@ class CustomDrawer extends StatelessWidget {
                     'Settings',
                         () {
                       _closeDrawer(context);
-                      // TODO: Implement settings navigation
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                      );
                     },
                   ),
                 ],
