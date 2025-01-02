@@ -4,6 +4,7 @@ import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/cdn_image.dart';
 import '../services/destination_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashedDivider extends StatelessWidget {
   const DashedDivider({Key? key}) : super(key: key);
@@ -125,8 +126,33 @@ class DestinationDetailsScreen extends StatelessWidget {
                       top: 8,
                       right: 8,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          // Handle map view
+                        onPressed: () async {
+                          if (destination.mapsUrl != null) {
+                              final Uri mapUrl = Uri.parse(destination.mapsUrl!);
+                              try {
+                                if (await canLaunchUrl(mapUrl)) {
+                                  await launchUrl(mapUrl);
+                                } else {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Could not open Google Maps'),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error launching maps'),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              }
+                          }
                         },
                         icon: const Icon(Icons.open_in_new, size: 16),
                         label: const Text('View on Map'),

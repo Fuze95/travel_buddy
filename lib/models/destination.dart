@@ -14,6 +14,7 @@ class Destination {
   final List<String> transportationOptions;
   final Map<String, dynamic> weatherInfo;
   final bool isFavorite;
+  final String? mapsUrl;
 
   Destination({
     required this.id,
@@ -31,6 +32,7 @@ class Destination {
     required this.transportationOptions,
     required this.weatherInfo,
     this.isFavorite = false,
+    this.mapsUrl,
   });
 
   Destination copyWith({
@@ -49,6 +51,7 @@ class Destination {
     List<String>? transportationOptions,
     Map<String, dynamic>? weatherInfo,
     bool? isFavorite,
+    String? mapsUrl,
   }) {
     return Destination(
       id: id ?? this.id,
@@ -66,6 +69,7 @@ class Destination {
       transportationOptions: transportationOptions ?? this.transportationOptions,
       weatherInfo: weatherInfo ?? this.weatherInfo,
       isFavorite: isFavorite ?? this.isFavorite,
+      mapsUrl: mapsUrl ?? this.mapsUrl,
     );
   }
 
@@ -85,6 +89,7 @@ class Destination {
     'transportationOptions': transportationOptions,
     'weatherInfo': weatherInfo,
     'isFavorite': isFavorite,
+    'mapsUrl': mapsUrl,
   };
 
   factory Destination.fromJson(Map<String, dynamic> json) {
@@ -104,6 +109,7 @@ class Destination {
       transportationOptions: List<String>.from(json['transportationOptions'] ?? []),
       weatherInfo: json['weatherInfo'] ?? {},
       isFavorite: json['isFavorite'] ?? false,
+      mapsUrl: json['mapsUrl'],
     );
   }
 }
