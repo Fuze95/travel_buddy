@@ -96,7 +96,7 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
         }).toList();
 
         await prefs.setStringList('trips', updatedTrips);
-        await _loadTrips(); // Reload the trips
+        await _loadTrips();
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -147,10 +147,20 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          // Fixed Header Container
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -182,7 +192,7 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
                         builder: (context) => const AddTripScreen(),
                       ),
                     );
-                    _loadTrips(); // Reload trips after returning from AddTripScreen
+                    _loadTrips();
                   },
                   icon: const Icon(Icons.add),
                   label: const Text('Add'),
@@ -197,6 +207,7 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
               ],
             ),
           ),
+          // Content Area
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
