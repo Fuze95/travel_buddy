@@ -53,35 +53,45 @@ class DestinationDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Destination Name and Location Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
-                  child: Text(
-                    destination.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.location_on_outlined,
-                          color: Colors.grey[600],
-                          size: 20),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${destination.name}, Sri Lanka',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              destination.name,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on_outlined,
+                                    color: Colors.grey[600],
+                                    size: 20),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${destination.name}, Sri Lanka',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 40,  // Matches the height of the name area
                         child: IconButton(
                           icon: Icon(
                             destination.isFavorite
