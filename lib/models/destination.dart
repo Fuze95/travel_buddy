@@ -14,6 +14,7 @@ class Destination {
   final List<String> transportationOptions;
   final Map<String, dynamic> weatherInfo;
   final bool isFavorite;
+  final String? mapsUrl;
 
   Destination({
     required this.id,
@@ -31,7 +32,46 @@ class Destination {
     required this.transportationOptions,
     required this.weatherInfo,
     this.isFavorite = false,
+    this.mapsUrl,
   });
+
+  Destination copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? imageUrl,
+    double? latitude,
+    double? longitude,
+    double? rating,
+    List<String>? activities,
+    List<String>? category,
+    List<String>? highlights,
+    String? bestTimeToVisit,
+    List<String>? localTips,
+    List<String>? transportationOptions,
+    Map<String, dynamic>? weatherInfo,
+    bool? isFavorite,
+    String? mapsUrl,
+  }) {
+    return Destination(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      rating: rating ?? this.rating,
+      activities: activities ?? this.activities,
+      category: category ?? this.category,
+      highlights: highlights ?? this.highlights,
+      bestTimeToVisit: bestTimeToVisit ?? this.bestTimeToVisit,
+      localTips: localTips ?? this.localTips,
+      transportationOptions: transportationOptions ?? this.transportationOptions,
+      weatherInfo: weatherInfo ?? this.weatherInfo,
+      isFavorite: isFavorite ?? this.isFavorite,
+      mapsUrl: mapsUrl ?? this.mapsUrl,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -49,6 +89,7 @@ class Destination {
     'transportationOptions': transportationOptions,
     'weatherInfo': weatherInfo,
     'isFavorite': isFavorite,
+    'mapsUrl': mapsUrl,
   };
 
   factory Destination.fromJson(Map<String, dynamic> json) {
@@ -68,6 +109,7 @@ class Destination {
       transportationOptions: List<String>.from(json['transportationOptions'] ?? []),
       weatherInfo: json['weatherInfo'] ?? {},
       isFavorite: json['isFavorite'] ?? false,
+      mapsUrl: json['mapsUrl'],
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'circular_nav_item.dart';
 import '../screens/home_screen.dart';
+import '../screens/favorites_screen.dart';
+import '../screens/map_screen.dart';
 import '../services/user_provider.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -42,10 +44,18 @@ class CustomBottomNavBar extends StatelessWidget {
         }
         break;
       case 3: // Maps
-      // TODO: Navigate to MapsScreen when implemented
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MapScreen(),
+          ),
+        );
         break;
       case 4: // Favorites
-      // TODO: Navigate to FavoritesScreen when implemented
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const FavoritesScreen(),
+          ),
+        );
         break;
     }
   }

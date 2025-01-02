@@ -5,16 +5,18 @@ import 'services/theme_provider.dart';
 import 'services/destination_provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/user_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => DestinationProvider()),
+        ChangeNotifierProvider(create: (_) => DestinationProvider(prefs)),
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const TravelBuddyApp(),

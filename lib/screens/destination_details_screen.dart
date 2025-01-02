@@ -4,6 +4,7 @@ import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/cdn_image.dart';
 import '../services/destination_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashedDivider extends StatelessWidget {
   const DashedDivider({Key? key}) : super(key: key);
@@ -53,35 +54,45 @@ class DestinationDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Destination Name and Location Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
-                  child: Text(
-                    destination.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.location_on_outlined,
-                          color: Colors.grey[600],
-                          size: 20),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${destination.name}, Sri Lanka',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              destination.name,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on_outlined,
+                                    color: Colors.grey[600],
+                                    size: 20),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${destination.name}, Sri Lanka',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 40,  // Matches the height of the name area
                         child: IconButton(
                           icon: Icon(
                             destination.isFavorite
@@ -93,7 +104,8 @@ class DestinationDetailsScreen extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           onPressed: () {
-                            // Toggle favorite
+                            final destinationProvider = context.read<DestinationProvider>();
+                            destinationProvider.toggleFavorite(destination.id);
                           },
                         ),
                       ),
@@ -114,8 +126,33 @@ class DestinationDetailsScreen extends StatelessWidget {
                       top: 8,
                       right: 8,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          // Handle map view
+                        onPressed: () async {
+                          if (destination.mapsUrl != null) {
+                              final Uri mapUrl = Uri.parse(destination.mapsUrl!);
+                              try {
+                                if (await canLaunchUrl(mapUrl)) {
+                                  await launchUrl(mapUrl);
+                                } else {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Could not open Google Maps'),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error launching maps'),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              }
+                          }
                         },
                         icon: const Icon(Icons.open_in_new, size: 16),
                         label: const Text('View on Map'),
