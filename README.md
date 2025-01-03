@@ -86,8 +86,9 @@ lib/
 │   └── ...
 ├── services/
 │   ├── destination_provider.dart
+│   ├── favorites_provider.dart
 │   ├── firebase_service.dart
-│   └── theme_provider.dart
+│   └── user_provider.dart
 ├── widgets/
 │   ├── custom_app_bar.dart
 │   ├── destination_card.dart

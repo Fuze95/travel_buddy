@@ -18,7 +18,6 @@ class TripCard extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
-  // Add this method to handle both network and asset images
   Widget _buildImage() {
     if (imageUrl.startsWith('http')) {
       return Image.network(
@@ -69,9 +68,7 @@ class TripCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Replace the old Image.network with _buildImage()
               _buildImage(),
-              // Gradient Overlay
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -84,13 +81,11 @@ class TripCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Content
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title and Description
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +111,6 @@ class TripCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Action Buttons
                     Container(
                       height: 32,
                       decoration: BoxDecoration(
@@ -126,28 +120,34 @@ class TripCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _ActionButton(
-                            label: 'View',
-                            color: const Color(0xFF4CAF50),
-                            onPressed: onView,
+                          Expanded(
+                            child: _ActionButton(
+                              label: 'View',
+                              color: const Color(0xFF4CAF50),
+                              onPressed: onView,
+                            ),
                           ),
                           Container(
                             width: 1,
                             color: Colors.white24,
                           ),
-                          _ActionButton(
-                            label: 'Edit',
-                            color: const Color(0xFFFFA000),
-                            onPressed: onEdit,
+                          Expanded(
+                            child: _ActionButton(
+                              label: 'Edit',
+                              color: const Color(0xFFFFA000),
+                              onPressed: onEdit,
+                            ),
                           ),
                           Container(
                             width: 1,
                             color: Colors.white24,
                           ),
-                          _ActionButton(
-                            label: 'Delete',
-                            color: const Color(0xFFF44336),
-                            onPressed: onDelete,
+                          Expanded(
+                            child: _ActionButton(
+                              label: 'Delete',
+                              color: const Color(0xFFF44336),
+                              onPressed: onDelete,
+                            ),
                           ),
                         ],
                       ),
@@ -180,13 +180,14 @@ class _ActionButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         foregroundColor: color,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Text(
         label,
         style: const TextStyle(fontSize: 12),
+        textAlign: TextAlign.center,
       ),
     );
   }
