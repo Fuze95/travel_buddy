@@ -7,7 +7,7 @@ A comprehensive Flutter travel app for exploring Sri Lanka, featuring offline ca
 ### Core Functionality
 - **Destination Discovery**: Browse and search through curated destinations across Sri Lanka
 - **Trip Planning**: Create and manage travel itineraries
-- **Interactive Maps**: Explore destinations with offline map support
+- **Interactive Maps**: Explore destinations with map
 - **Travel Guides**: Access comprehensive guides for each destination
 - **Favorites System**: Save and manage favorite destinations
 - **Offline Support**: Access key features without internet connectivity
