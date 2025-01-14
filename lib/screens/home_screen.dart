@@ -77,7 +77,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
-                // Rest of your existing code remains the same...
                 // Categories
                 Container(
                   height: 50,
